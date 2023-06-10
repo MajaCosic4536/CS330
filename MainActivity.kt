@@ -31,6 +31,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     navHostController = rememberNavController()
                   NavSetup(navHostController = navHostController)
+
                 }
             }
         }

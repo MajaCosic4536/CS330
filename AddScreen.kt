@@ -21,15 +21,21 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import coil.compose.rememberImagePainter
 import com.example.cs330_p01.R
 import com.example.cs330_p01.common.AppViewModel
+import com.example.cs330_p01.common.LoadedImage
 import com.example.cs330_p01.common.LogoNHelpCard
 import com.example.cs330_p01.common.NavigationBar
 import com.example.cs330_p01.common.openCamera
@@ -76,8 +82,8 @@ fun CamNGalleryCard(context: Context) {
     val galleryLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             if (uri != null) {
-
                 Toast.makeText(context, "Selected image: $uri", Toast.LENGTH_SHORT).show()
+
             } else {
                 Toast.makeText(context, "Failed to get image from gallery", Toast.LENGTH_SHORT)
                     .show()

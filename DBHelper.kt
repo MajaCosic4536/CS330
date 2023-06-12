@@ -104,70 +104,71 @@ class DBCategory(context: Context?) : SQLiteOpenHelper(context, DB_NAME, null, D
     }
 }
 
-class DBColor(context: Context?) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
+class DBWeatherCode(context: Context?) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
 
     companion object {
         private const val DB_VERSION = 1
-        private const val DB_NAME = "colorDB"
-        private const val COLOR_TABLE = "colors"
-        private const val COLOR_PRIMARYKEY = "colorPrimaryKey"
-        private const val KEY_COLORNAME = "colorName"
+        private const val DB_NAME = "weatherCodeDB"
+        private const val WC_TABLE = "weatherCodes"
+        private const val CODE = "code"
+        private const val DESCRIPTION = "description"
     }
 
     override fun onCreate(p0: SQLiteDatabase?) {
-        val CREATE_TABLE = ("CREATE TABLE " + COLOR_TABLE + "("
-                + COLOR_PRIMARYKEY + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + KEY_COLORNAME + " TEXT )")
+        val CREATE_TABLE = ("CREATE TABLE " + WC_TABLE + "("
+                + CODE + " INTEGER PRIMARY KEY,"
+                + DESCRIPTION + " TEXT )")
         p0!!.execSQL(CREATE_TABLE)
     }
 
     override fun onUpgrade(p0: SQLiteDatabase?, p1: Int, p2: Int) {
-        p0!!.execSQL("DROP TABLE IF EXISTS " + COLOR_TABLE)
+        p0!!.execSQL("DROP TABLE IF EXISTS " + WC_TABLE)
         onCreate(p0)
     }
 
-    fun insertColor(color: String) {
+    fun insertWeatherCode(weatherCode: WeatherCode) {
         val db = this.writableDatabase
 
         val cValues = ContentValues()
-        cValues.put(KEY_COLORNAME, color)
+         cValues.put(CODE, weatherCode.code)
+        cValues.put(DESCRIPTION, weatherCode.descripton)
 
-        val newRowId = db.insert(COLOR_TABLE, null, cValues)
+        val newRowId = db.insert(WC_TABLE, null, cValues)
         db.close()
     }
 
-    fun getColors(): ArrayList<MyColor> {
+    fun getWeatherCodes(): ArrayList<WeatherCode> {
         val db = this.writableDatabase
 
-        val colorList = ArrayList<MyColor>()
+        val wcList = ArrayList<WeatherCode>()
 
-        val query = "SELECT colorPrimaryKey, colorName FROM " + COLOR_TABLE
+        val query = "SELECT code, description FROM " + WC_TABLE
         val cursor = db.rawQuery(query, null)
 
 
         while (cursor.moveToNext()) {
-            val key = cursor.getColumnIndex(COLOR_PRIMARYKEY)
-            val name = cursor.getColumnIndex(KEY_COLORNAME)
+            val code = cursor.getColumnIndex(CODE)
+            val desc = cursor.getColumnIndex(DESCRIPTION)
 
-            colorList.add(
-                MyColor(
-                    cursor.getInt(key),
-                    cursor.getString(name)
+            wcList.add(
+                WeatherCode(
+                    cursor.getInt(code),
+                    cursor.getString(desc)
                 )
             )
         }
-        return colorList
+        return wcList
     }
 
-    fun getCategoryByName(color: String): MyColor {
+    fun getWeatherCode(code: Int): WeatherCode {
         val db = this.writableDatabase
-        var col = MyColor(0, "")
-        val query = "SELECT colorPrimaryKey, colorName FROM " + COLOR_TABLE
+        var wc = WeatherCode(0, "")
+        val query = "SELECT code, description FROM " + WC_TABLE
         val cursor = db.query(
-            COLOR_TABLE,
-            arrayOf(KEY_COLORNAME),
-            COLOR_PRIMARYKEY + "=?",
-            arrayOf(color),
+            WC_TABLE,
+            arrayOf(DESCRIPTION),
+            CODE + "=?",
+            arrayOf(code.toString()),
             null,
             null,
             null,
@@ -175,29 +176,29 @@ class DBColor(context: Context?) : SQLiteOpenHelper(context, DB_NAME, null, DB_V
         )
 
         if (cursor.moveToNext()) {
-            val key = cursor.getColumnIndex(COLOR_PRIMARYKEY)
-            val name = cursor.getColumnIndex(KEY_COLORNAME)
+            val code = cursor.getColumnIndex(CODE)
+            val desc = cursor.getColumnIndex(DESCRIPTION)
 
-            col = MyColor(cursor.getInt(key), cursor.getString(name))
+            wc = WeatherCode(cursor.getInt(code), cursor.getString(desc))
         }
-        return col
+        return wc
     }
 
-    fun deleteColor(key: Int?) {
+    fun deleteWeatherCode(key: Int?) {
         val db = this.writableDatabase
-        db.delete(COLOR_TABLE, COLOR_PRIMARYKEY + " = ?", arrayOf(key.toString()))
+        db.delete(WC_TABLE, CODE + " = ?", arrayOf(key.toString()))
         db.close()
     }
 
-    fun updateColor(color: MyColor): Int {
+    fun updateWeatherCode(weatherCode: WeatherCode): Int {
         val db = this.writableDatabase
         val cVals = ContentValues()
-        cVals.put(KEY_COLORNAME, color.name)
+        cVals.put(DESCRIPTION, weatherCode.descripton)
         return db.update(
-            COLOR_TABLE,
+            WC_TABLE,
             cVals,
-            "$COLOR_PRIMARYKEY = ?",
-            arrayOf(color.key.toString())
+            "$CODE = ?",
+            arrayOf(weatherCode.code.toString())
         )
     }
 }

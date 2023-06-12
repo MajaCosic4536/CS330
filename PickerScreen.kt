@@ -52,7 +52,6 @@ import com.example.cs330_p01.common.LogoNHelpCard
 import com.example.cs330_p01.common.NavigationBar
 import com.example.cs330_p01.database.Category
 import com.example.cs330_p01.database.DBCategory
-import com.example.cs330_p01.database.DBColor
 import com.example.cs330_p01.database.MyColor
 import com.example.cs330_p01.database.getMyColorList
 
@@ -394,13 +393,6 @@ fun ColorFocusScreen(): Boolean {
 @Composable
 fun ColorScreen(radioOrCheckBox: Boolean) {
     val context = LocalContext.current
-    val dbColor = DBColor(context)
-    var txtFieldValue by remember {
-        mutableStateOf("")
-    }
-    var showAddColor by remember {
-        mutableStateOf(false)
-    }
 
     var expanded by remember {
         mutableStateOf(false)

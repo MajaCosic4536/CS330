@@ -1,5 +1,6 @@
 package com.example.cs330_p01.common
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.example.cs330_p01.navigation.NavigationRoutes
@@ -7,6 +8,7 @@ import com.example.cs330_p01.navigation.NavigationRoutes
 class AppViewModel : ViewModel() {
 
     lateinit var navHostController: NavHostController
+    var internetGranted = mutableStateOf(false)
 
     fun goBack() {
         navHostController.popBackStack()

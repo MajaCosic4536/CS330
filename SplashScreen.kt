@@ -40,14 +40,17 @@ import com.example.cs330_p01.common.openCamera
 
 @Composable
 fun SplashScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
-    SplashScreenView {
-        viewModel.goToHomeScreen()
-    }
+
+    SplashScreenView(onStart = { viewModel.goToHomeScreen() }, viewModel = viewModel)
 }
 
 @Composable
-fun SplashScreenView(onStart: () -> Unit) {
-
+fun SplashScreenView(onStart: () -> Unit, viewModel: AppViewModel) {
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        viewModel.internetGranted.value = isGranted
+    }
     var context = LocalContext.current
 
     val cameraLauncher =
@@ -86,7 +89,10 @@ fun SplashScreenView(onStart: () -> Unit) {
             text = "Hello!",
             fontSize = 40.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.clickable { onStart() }
+            modifier = Modifier.clickable {
+                onStart()
+                launcher.launch(Manifest.permission.INTERNET)
+            }
         )
         Card(
             modifier = Modifier

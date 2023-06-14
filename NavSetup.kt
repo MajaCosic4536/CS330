@@ -12,6 +12,7 @@ import com.example.cs330_p01.screens.AddScreen
 import com.example.cs330_p01.screens.ClosetScreen
 import com.example.cs330_p01.screens.HomeScreen
 import com.example.cs330_p01.screens.PickerScreen
+import com.example.cs330_p01.screens.SortClothingItem
 import com.example.cs330_p01.screens.SplashScreen
 
 @Composable
@@ -38,6 +39,9 @@ fun NavSetup(navHostController: NavHostController) {
         }
         composable(route = NavigationRoutes.ClosetScreen.route) {
             ClosetScreen(vm, paddingValues)
+        }
+        composable(route = NavigationRoutes.SortClothingItem.route) {
+            SortClothingItem(vm, paddingValues)
         }
     }
 }

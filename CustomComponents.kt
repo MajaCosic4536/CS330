@@ -10,10 +10,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.BottomAppBar
@@ -124,4 +127,25 @@ fun NavigationBar(
 fun openCamera(context: Context) {
     val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
     context.startActivity(intent)
+}
+
+@Composable
+fun MasonryGrid(columns: Int = 2, content: @Composable () -> Unit) {
+    val columnWidth = 1f / columns
+    Column(modifier = Modifier.fillMaxWidth()) {
+        var currentColumn = 0
+        Row {
+            content()
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        content()
+    }
+}
+
+@Composable
+fun MasonryGridItem(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    Box(modifier = modifier.aspectRatio(1f))
+    {
+        content()
+    }
 }

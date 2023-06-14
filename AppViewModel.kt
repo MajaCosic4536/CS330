@@ -30,4 +30,8 @@ class AppViewModel : ViewModel() {
         navHostController.navigate(NavigationRoutes.ClosetScreen.route)
     }
 
+    fun goToSortClotihngItemScreen(){
+        navHostController.navigate(NavigationRoutes.SortClothingItem.route)
+    }
+
 }

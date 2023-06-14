@@ -6,4 +6,5 @@ sealed class NavigationRoutes(val route: String) {
     object PickerScreen : NavigationRoutes("picker")
     object AddScreen : NavigationRoutes("add")
     object ClosetScreen : NavigationRoutes("closet")
+    object SortClothingItem : NavigationRoutes("sort")
 }

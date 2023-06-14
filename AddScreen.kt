@@ -3,7 +3,9 @@ package com.example.cs330_p01.screens
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.net.Uri
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -70,6 +72,7 @@ fun AddScreenView(context: Context) {
 @Composable
 fun CamNGalleryCard(context: Context) {
 
+    var path: String? = ""
     val cameraLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
@@ -83,7 +86,7 @@ fun CamNGalleryCard(context: Context) {
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             if (uri != null) {
                 Toast.makeText(context, "Selected image: $uri", Toast.LENGTH_SHORT).show()
-
+                path = uri.path
             } else {
                 Toast.makeText(context, "Failed to get image from gallery", Toast.LENGTH_SHORT)
                     .show()
@@ -128,6 +131,19 @@ fun CamNGalleryCard(context: Context) {
                             }
                         }
                 )
+//                path?.let {
+//                    val bitmap = BitmapFactory.decodeFile(path)
+////                    val imageView: ImageView = ImageView(context)
+////                    imageView.setImageBitmap(bitmap)
+//                    val painter = painterResource(context.resources.getIdentifier(it,null,null))
+//                    Image(
+//                        painter = painter,
+//                        contentDescription = "Image Icon",
+//                        modifier = Modifier
+//                            .size(200.dp)
+//                            .padding(4.dp)
+//                    )
+//                }
                 Spacer(modifier = Modifier.weight(1f))
                 Image(
                     painter = painterResource(id = R.drawable.image_icon),
@@ -137,6 +153,7 @@ fun CamNGalleryCard(context: Context) {
                         .padding(4.dp)
                         .clickable {
                             galleryLauncher.launch("image/*")
+
                         }
                 )
                 Spacer(modifier = Modifier.weight(1f))

@@ -1,8 +1,5 @@
 package com.example.cs330_p01.screens
 
-import android.graphics.Color
-import android.widget.RadioGroup
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -50,9 +46,7 @@ import com.example.cs330_p01.R
 import com.example.cs330_p01.common.AppViewModel
 import com.example.cs330_p01.common.LogoNHelpCard
 import com.example.cs330_p01.common.NavigationBar
-import com.example.cs330_p01.database.Category
 import com.example.cs330_p01.database.DBCategory
-import com.example.cs330_p01.database.MyColor
 import com.example.cs330_p01.database.getMyColorList
 
 
@@ -90,7 +84,7 @@ fun PickerScreenView(viewModel: AppViewModel) {
     Column {
         // LogoNHelpCard()
         OutfitTypeCard()
-        ColorScreen(ColorFocusScreen())
+        ColorCard(ColorFocusCard("Should the focus be on a single color or more?"))
         NavigationBar(
             { viewModel.goToHomeScreen() },
             { viewModel.goToPickerScreen() },
@@ -326,7 +320,7 @@ fun OutfitTypeCard() {
 }
 
 @Composable
-fun ColorFocusScreen(): Boolean {
+fun ColorFocusCard(text:String): Boolean {
     val context = LocalContext.current
     val radioChoices = listOf("Single", "More")
     var radioOrCheckBox by remember {
@@ -352,7 +346,7 @@ fun ColorFocusScreen(): Boolean {
             )
         ) {
             Text(
-                text = "Shoud the focus be ona single color or more?",
+                text = text,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
@@ -391,7 +385,7 @@ fun ColorFocusScreen(): Boolean {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ColorScreen(radioOrCheckBox: Boolean) {
+fun ColorCard(radioOrCheckBox: Boolean) {
     val context = LocalContext.current
 
     var expanded by remember {

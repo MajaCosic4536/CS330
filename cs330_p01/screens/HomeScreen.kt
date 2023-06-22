@@ -2,8 +2,13 @@ package com.example.cs330_p01.screens
 
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,9 +48,12 @@ import com.example.cs330_p01.ApiData.Constants.Companion.BASE_URL
 import com.example.cs330_p01.R
 import com.example.cs330_p01.common.AppViewModel
 import com.example.cs330_p01.common.ChoseWeatherIcon
+import com.example.cs330_p01.common.EmptyScreen
 import com.example.cs330_p01.common.GetRecomendedOutfit
 import com.example.cs330_p01.common.LogoNHelpCard
 import com.example.cs330_p01.common.NavigationBar
+import com.example.cs330_p01.common.SelectedOptions
+import com.example.cs330_p01.database.ClothingItem
 import com.example.cs330_p01.database.DBClothes
 import com.example.cs330_p01.database.DBWeatherCode
 import com.example.cs330_p01.database.WeatherCode
@@ -65,8 +73,10 @@ fun HomeScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
         modifier = Modifier.fillMaxSize(),
         contentScale = ContentScale.FillWidth
     )
-
-    HomeScreenView()
+    val context = LocalContext.current
+    val dbClothes = DBClothes(context)
+    val clothesList = GetRecomendedOutfit(dbClothes, viewModel.currentTemp.value)
+    HomeScreenView(viewModel, clothesList)
     NavigationBar(
         { viewModel.goToHomeScreen() },
         { viewModel.goToPickerScreen() },
@@ -76,17 +86,24 @@ fun HomeScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
 }
 
 @Composable
-fun HomeScreenView() {
+fun HomeScreenView(vm: AppViewModel, clothesList: ArrayList<ClothingItem>) {
     Column {
         LogoNHelpCard()
-        WeatherCard()
-
+        WeatherCard(vm, clothesList)
     }
 }
 
 @Composable
-fun WeatherCard() {
-    val contex = LocalContext.current
+fun WeatherCard(vm: AppViewModel, clothesList: ArrayList<ClothingItem>) {
+    val context = LocalContext.current
+//    Toast.makeText(
+//        context,
+//        SelectedOptions.category + " " + SelectedOptions.OneOrMore.toString() + " a " + SelectedOptions.singleColor + " b " + SelectedOptions.colors,
+//        Toast.LENGTH_SHORT
+//    ).show()
+    var expanded by remember {
+        mutableStateOf(false)
+    }
 
     var currentTemp by remember {
         mutableStateOf(0.0)
@@ -126,7 +143,7 @@ fun WeatherCard() {
     }
 
 
-    val dbWeatherCode = DBWeatherCode(contex)
+    val dbWeatherCode = DBWeatherCode(context)
 
 
     val retrofit = Retrofit.Builder()
@@ -152,6 +169,7 @@ fun WeatherCard() {
                     val temperatureValue = it.current_weather?.temperature
                     if (temperatureValue != null) {
                         currentTemp = temperatureValue
+
                         currentTime = it.current_weather.time
 
 //                        Toast.makeText(contex, it.hourly.weathercode.toString(), Toast.LENGTH_SHORT)
@@ -204,153 +222,163 @@ fun WeatherCard() {
             nextWeatherCode02 = wc
         }
     }
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-    ) {
-        Card(
+    if (!expanded) {
+        Box(
             modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 8.dp
-            ), colors = CardDefaults.cardColors(
-                MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
-            )
-        ) {
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                .fillMaxWidth()
+        )
+        {
+            Card(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .animateContentSize(
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessVeryLow
+                        )
+                    )
+                    .fillMaxWidth(),
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 8.dp
+                ), colors = CardDefaults.cardColors(
+                    MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
+                )
             ) {
-                item {
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(
-                            start = 2.dp,
-                            top = 8.dp,
-                            end = 8.dp,
-                            bottom = 8.dp
-                        )
-                    ) {
-                        Image(
-                            painter = painterResource(id = ChoseWeatherIcon(currentWeatherCode.code)),
-                            contentDescription = "Current Weather Icon",
-                            modifier = Modifier
-                                .size(150.dp),
-                            alignment = Alignment.CenterStart
-                        )
-                        val result = currentTime.substringAfter("T")
-                        Text(
-                            text = result,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = currentWeatherCode.descripton.replace(":", ":\n"),
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center
-                        )
-                        Text(
-                            text = "$currentTemp °C",
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            fontSize = 30.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-                item {
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(8.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(id = ChoseWeatherIcon(nextWeatherCode01.code)),
-                            contentDescription = "Current Weather Icon",
-                            modifier = Modifier
-                                .size(100.dp),
-                            alignment = Alignment.CenterStart
-                        )
-                        val result = nextTime01.substringAfter("T")
-                        Text(
-                            text = result,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = nextWeatherCode01.descripton.substringBefore(":"),
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center
-                        )
-                        Text(
-                            text = "$nextTemp01 °C",
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-                item {
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .fillMaxWidth()
-                    ) {
-                        Image(
-                            painter = painterResource(id = ChoseWeatherIcon(nextWeatherCode02.code)),
-                            contentDescription = "Current Weather Icon",
-                            modifier = Modifier
-                                .size(100.dp),
-                            alignment = Alignment.CenterStart
-                        )
-                        val result = nextTime02.substringAfter("T")
-                        Text(
-                            text = result,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = nextWeatherCode02.descripton.substringBefore(":"),
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center
-                        )
-                        Text(
-                            text = "$nextTemp02 °C",
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.Bold,
-
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    item {
+                        Column(
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.padding(
+                                start = 2.dp,
+                                top = 8.dp,
+                                end = 8.dp,
+                                bottom = 8.dp
                             )
+                        ) {
+                            Image(
+                                painter = painterResource(id = ChoseWeatherIcon(currentWeatherCode.code)),
+                                contentDescription = "Current Weather Icon",
+                                modifier = Modifier
+                                    .size(150.dp),
+                                alignment = Alignment.CenterStart
+                            )
+                            val result = currentTime.substringAfter("T")
+                            Text(
+                                text = result,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = currentWeatherCode.descripton.replace(":", ":\n"),
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center
+                            )
+                            Text(
+                                text = "$currentTemp °C",
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                fontSize = 30.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                    item {
+                        Column(
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.padding(8.dp)
+                        ) {
+                            Image(
+                                painter = painterResource(id = ChoseWeatherIcon(nextWeatherCode01.code)),
+                                contentDescription = "Current Weather Icon",
+                                modifier = Modifier
+                                    .size(100.dp),
+                                alignment = Alignment.CenterStart
+                            )
+                            val result = nextTime01.substringAfter("T")
+                            Text(
+                                text = result,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = nextWeatherCode01.descripton.substringBefore(":"),
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center
+                            )
+                            Text(
+                                text = "$nextTemp01 °C",
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                    item {
+                        Column(
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .fillMaxWidth()
+                        ) {
+                            Image(
+                                painter = painterResource(id = ChoseWeatherIcon(nextWeatherCode02.code)),
+                                contentDescription = "Current Weather Icon",
+                                modifier = Modifier
+                                    .size(100.dp),
+                                alignment = Alignment.CenterStart
+                            )
+                            val result = nextTime02.substringAfter("T")
+                            Text(
+                                text = result,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = nextWeatherCode02.descripton.substringBefore(":"),
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center
+                            )
+                            Text(
+                                text = "$nextTemp02 °C",
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Bold,
+
+                                )
+                        }
                     }
                 }
             }
         }
     }
-    ClothesCard(currentTemp)
+    vm.currentTemp.value = currentTemp
+    expanded = ClothesCard(clothesList)
 }
 
 
 @Composable
-fun ClothesCard(currenTemp:Double) {
+fun ClothesCard(clothesList: ArrayList<ClothingItem>): Boolean {
 
     val context = LocalContext.current
-
-    val dbClothes = DBClothes(context)
-    val clothesList = GetRecomendedOutfit(dbClothes,currenTemp)
     //Toast.makeText(context,clothesList.toString(),Toast.LENGTH_SHORT).show()
+    var expanded by remember {
+        mutableStateOf(false)
+    }
 
     Box(
         modifier = Modifier
@@ -359,43 +387,55 @@ fun ClothesCard(currenTemp:Double) {
         Card(
             modifier = Modifier
                 .padding(start = 16.dp, top = 2.dp, bottom = 90.dp, end = 16.dp)
-                .fillMaxSize(),
+                .fillMaxSize()
+                .animateContentSize(
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioLowBouncy,
+                        stiffness = Spring.StiffnessVeryLow
+                    )
+                )
+                .clickable { expanded = !expanded },
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 8.dp
             ), colors = CardDefaults.cardColors(
-                MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
+                MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
             )
         ) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(2.dp)
-            ) {
-                items(clothesList) { item ->
-                    val painter = painterResource(
-                        context.resources.getIdentifier(
-                            item.code,
-                            "drawable",
-                            context.packageName
-                        )
-                    )
-
-                    Image(
-                        painter = painter,
-                        contentDescription = "Item Icon",
-                        modifier = Modifier
-                            .padding(
-                                start = 8.dp,
-                                top = 4.dp,
-                                bottom = 4.dp,
-                                end = 8.dp
+            if (clothesList.isNotEmpty()) {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    contentPadding = PaddingValues(2.dp)
+                ) {
+                    items(clothesList) { item ->
+                        val painter = painterResource(
+                            context.resources.getIdentifier(
+                                item.code,
+                                "drawable",
+                                context.packageName
                             )
-                            .size(200.dp)
-                            .clip(MaterialTheme.shapes.large)
-                            .background(Color.White),
-                        alignment = Alignment.Center
-                    )
+                        )
+
+                        Image(
+                            painter = painter,
+                            contentDescription = "Item Icon",
+                            modifier = Modifier
+                                .padding(
+                                    start = 8.dp,
+                                    top = 4.dp,
+                                    bottom = 4.dp,
+                                    end = 8.dp
+                                )
+                                .size(200.dp)
+                                .clip(MaterialTheme.shapes.large)
+                                .background(Color.White),
+                            alignment = Alignment.Center
+                        )
+                    }
                 }
+            } else {
+                EmptyScreen()
             }
         }
     }
+    return expanded
 }

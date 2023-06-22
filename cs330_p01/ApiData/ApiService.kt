@@ -16,7 +16,6 @@ interface ApiService {
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
         @Query("hourly") hourly: String?,
-       // @Query("weathercode") weatherCode: Boolean,
         @Query("current_weather") currentWeather: Boolean,
         @Query("timezone") timezone: String
     ): Call<WeatherData?>?

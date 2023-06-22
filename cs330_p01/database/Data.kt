@@ -14,7 +14,7 @@ class MyColor(
 ) {
 }
 
-fun getMyColorList(): List<String> {
+fun getMyColorList(): ArrayList<String> {
     val colorList = listOf(
         "Red",
         "Orange",
@@ -31,11 +31,16 @@ fun getMyColorList(): List<String> {
         "Black",
         "White"
     )
-    return colorList
+    val list = ArrayList<String>()
+    for (i in colorList){
+        list.add(i)
+    }
+
+    return list
 }
 
-fun getSortingCategory(): List<String> {
-    val list = listOf(
+fun getSortingCategory(): ArrayList<String> {
+    val categorylist = listOf(
         "All",
         "Shirts",
         "Pants",
@@ -51,6 +56,11 @@ fun getSortingCategory(): List<String> {
         "Accessories",
         "Shoes"
     )
+    val list = ArrayList<String>()
+    for (i in categorylist){
+        list.add(i)
+    }
+
     return list
 }
 

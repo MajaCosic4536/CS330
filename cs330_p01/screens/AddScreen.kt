@@ -104,7 +104,7 @@ fun CamNGalleryCard(context: Context) {
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 8.dp
             ), colors = CardDefaults.cardColors(
-                MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
+                MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
             )
         ) {
             Column(

@@ -1,5 +1,6 @@
 package com.example.cs330_p01.common
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -96,7 +97,14 @@ class SelectedOptions() {
     companion object {
         var category = ""
         var OneOrMore = false
+        var singleColor = ""
         var colors = ""
+        fun setToNone() {
+            category = ""
+            OneOrMore = false
+            singleColor = ""
+            colors = ""
+        }
     }
 }
 
@@ -244,7 +252,82 @@ fun ShoesList(dbClothes: DBClothes): ArrayList<ClothingItem> {
 }
 
 fun GetRecomendedOutfit(dbClothes: DBClothes, currentTemp: Double): ArrayList<ClothingItem> {
+    var list = ArrayList<ClothingItem>()
+    var index = 0
+    val category=SelectedOptions.category
+    val oneormore=SelectedOptions.OneOrMore
+    val singlecolor=SelectedOptions.singleColor
+
+    //list = getByTemp(dbClothes, currentTemp)
+    if (category == "" && SelectedOptions.OneOrMore == false) {
+        list = getByTemp(dbClothes, currentTemp,category)
+    } else if (category != "" && SelectedOptions.OneOrMore == false){
+//       do {
+//            list = getByTemp(dbClothes, currentTemp)
+//        }
+        while ((getByTemp(dbClothes,currentTemp,category)[0].category.contains(SelectedOptions.category) || getByTemp(dbClothes,currentTemp,category)[0].category.equals("")) &&
+            (getByTemp(dbClothes, currentTemp,category)[1].category.contains(SelectedOptions.category) || getByTemp(dbClothes, currentTemp,category)[1].category.equals("")) &&
+            (getByTemp(dbClothes, currentTemp,category)[2].category.contains(SelectedOptions.category) || getByTemp(dbClothes, currentTemp,category)[2].category.equals("")) &&
+            (getByTemp(dbClothes, currentTemp,category)[3].category.contains(SelectedOptions.category) || getByTemp(dbClothes, currentTemp,category)[3].category.equals("")) //&&
+//            (getByTemp(dbClothes, currentTemp)[4].category.contains(SelectedOptions.category) || getByTemp(dbClothes, currentTemp)[4].category.equals("")) &&
+//            (getByTemp(dbClothes, currentTemp)[5].category.contains(SelectedOptions.category) || getByTemp(dbClothes, currentTemp)[5].category.equals("")) &&
+//            (getByTemp(dbClothes, currentTemp)[6].category.contains(SelectedOptions.category) || getByTemp(dbClothes, currentTemp)[6].category.equals("")) &&
+//            (getByTemp(dbClothes, currentTemp)[7].category.contains(SelectedOptions.category) || getByTemp(dbClothes, currentTemp)[7].category.equals(""))
+        ){
+           list = getByTemp(dbClothes, currentTemp,category)
+       }
+    }else if (category != "" && SelectedOptions.OneOrMore == true){
+//        do {
+//            list = getByTemp(dbClothes, currentTemp)
+//        }
+        while (((getByTemp(dbClothes,currentTemp,category)[0].category.contains(SelectedOptions.category) || getByTemp(dbClothes,currentTemp,category)[0].category.equals("")) &&
+            (getByTemp(dbClothes, currentTemp,category)[1].category.contains(SelectedOptions.category) || getByTemp(dbClothes, currentTemp,category)[1].category.equals("")) &&
+            (getByTemp(dbClothes, currentTemp,category)[2].category.contains(SelectedOptions.category) || getByTemp(dbClothes, currentTemp,category)[2].category.equals("")) &&
+            (getByTemp(dbClothes, currentTemp,category)[3].category.contains(SelectedOptions.category) || getByTemp(dbClothes, currentTemp,category)[3].category.equals("")) &&
+//            (getByTemp(dbClothes, currentTemp)[4].category.contains(SelectedOptions.category) || getByTemp(dbClothes, currentTemp)[4].category.equals("")) &&
+//            (getByTemp(dbClothes, currentTemp)[5].category.contains(SelectedOptions.category) || getByTemp(dbClothes, currentTemp)[5].category.equals("")) &&
+//            (getByTemp(dbClothes, currentTemp)[6].category.contains(SelectedOptions.category) || getByTemp(dbClothes, currentTemp)[6].category.equals("")) &&
+//            (getByTemp(dbClothes, currentTemp)[7].category.contains(SelectedOptions.category) || getByTemp(dbClothes, currentTemp)[7].category.equals(""))) &&
+//            ((getByTemp(dbClothes,currentTemp)[0].color.contains(SelectedOptions.singleColor) || getByTemp(dbClothes,currentTemp)[0].color.equals(""))
+                    //&&
+                    (getByTemp(dbClothes, currentTemp,category)[1].color.contains(SelectedOptions.singleColor) || getByTemp(dbClothes, currentTemp,category)[1].color.equals("")) &&
+                    (getByTemp(dbClothes, currentTemp,category)[2].color.contains(SelectedOptions.singleColor) || getByTemp(dbClothes, currentTemp,category)[2].color.equals("")) &&
+                    (getByTemp(dbClothes, currentTemp,category)[3].color.contains(SelectedOptions.singleColor) || getByTemp(dbClothes, currentTemp,category)[3].color.equals(""))// &&
+                   // (getByTemp(dbClothes, currentTemp)[4].color.contains(SelectedOptions.singleColor) || getByTemp(dbClothes, currentTemp)[4].color.equals("")) //&&
+//                    (getByTemp(dbClothes, currentTemp)[5].color.contains(SelectedOptions.singleColor) || getByTemp(dbClothes, currentTemp)[5].color.equals("")) &&
+//                    (getByTemp(dbClothes, currentTemp)[6].color.contains(SelectedOptions.singleColor) || getByTemp(dbClothes, currentTemp)[6].color.equals("")) &&
+//                    (getByTemp(dbClothes, currentTemp)[7].color.contains(SelectedOptions.singleColor) || getByTemp(dbClothes, currentTemp)[7].color.equals(""))
+                  )) {
+            list = getByTemp(dbClothes, currentTemp,category)
+        }}
+        else if (category == "" && SelectedOptions.OneOrMore == true){
+//        do {
+//            list = getByTemp(dbClothes, currentTemp)
+//        }
+            while (((getByTemp(dbClothes,currentTemp,category)[0].color.contains(SelectedOptions.singleColor) || getByTemp(dbClothes,currentTemp,category)[0].color.equals("")) &&
+                        (getByTemp(dbClothes, currentTemp,category)[1].color.contains(SelectedOptions.singleColor) || getByTemp(dbClothes, currentTemp,category)[1].color.equals("")) &&
+                        (getByTemp(dbClothes, currentTemp,category)[2].color.contains(SelectedOptions.singleColor) || getByTemp(dbClothes, currentTemp,category)[2].color.equals("")) &&
+                        (getByTemp(dbClothes, currentTemp,category)[3].color.contains(SelectedOptions.singleColor) || getByTemp(dbClothes, currentTemp,category)[3].color.equals(""))
+                        )){
+            list = getByTemp(dbClothes, currentTemp,category)
+        }
+    }
+
+
+    val removedDubelsList = list.distinct()
+    val newlist = ArrayList<ClothingItem>()
+    for (item in removedDubelsList) {
+        if (item.code != "") {
+            newlist.add(item)
+        }
+    }
+
+    return newlist
+}
+
+fun getByTemp(dbClothes: DBClothes, currentTemp: Double,category: String): ArrayList<ClothingItem> {
     val list = ArrayList<ClothingItem>()
+
     var item01 = ClothingItem("", "", "", "", false, "")
     var item02 = ClothingItem("", "", "", "", false, "")
     var item03 = ClothingItem("", "", "", "", false, "")
@@ -337,13 +420,10 @@ fun GetRecomendedOutfit(dbClothes: DBClothes, currentTemp: Double): ArrayList<Cl
                 }
             } else {
                 if (n == 1) {
-                    //  if (skirtList.isNotEmpty())
                     item02 = skirtList.get(Random.nextInt(0..skirtList.size - 1))
                 } else if (n == 2) {
-                    //if (shortsList.isNotEmpty())
                     item02 = shortsList.get(Random.nextInt(0..shortsList.size - 1))
                 } else {
-                    //   if (pantsList.isNotEmpty())
                     item02 = pantsList.get(Random.nextInt(0..pantsList.size - 1))
                 }
             }
@@ -488,22 +568,26 @@ fun GetRecomendedOutfit(dbClothes: DBClothes, currentTemp: Double): ArrayList<Cl
             item07 = accList.get(Random.nextInt(0..accList.size - 1))
         item08 = accList.get(Random.nextInt(0..accList.size - 1))
     }
-
     list.add(item01)
     list.add(item02)
     list.add(item03)
-    list.add(item04)
-    list.add(item05)
-    list.add(item06)
-    list.add(item07)
-    list.add(item08)
-    val removedDubelsList = list.distinct()
-    val newlist = ArrayList<ClothingItem>()
-    for (item in removedDubelsList) {
-        if (item.code != "") {
-            newlist.add(item)
-        }
+    if(category!="") {
+        if (item04.category == category)
+            list.add(item04)
+        if (item05.category == category)
+            list.add(item05)
+        if (item06.category == category)
+            list.add(item06)
+        if (item07.category == category)
+            list.add(item07)
+        if (item08.category == category)
+            list.add(item08)
+    }else{
+            list.add(item04)
+            list.add(item05)
+            list.add(item06)
+            list.add(item07)
+            list.add(item08)
     }
-
-    return newlist
+    return list
 }

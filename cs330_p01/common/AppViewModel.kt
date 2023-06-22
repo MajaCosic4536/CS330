@@ -9,7 +9,7 @@ class AppViewModel : ViewModel() {
 
     lateinit var navHostController: NavHostController
     var internetGranted = mutableStateOf(false)
-
+    var currentTemp = mutableStateOf(0.0)
     fun goBack() {
         navHostController.popBackStack()
     }

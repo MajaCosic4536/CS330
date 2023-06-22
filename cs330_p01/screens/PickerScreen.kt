@@ -1,5 +1,8 @@
 package com.example.cs330_p01.screens
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -44,7 +47,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.cs330_p01.R
 import com.example.cs330_p01.common.AppViewModel
-import com.example.cs330_p01.common.EditClothingItem
 import com.example.cs330_p01.common.LogoNHelpCard
 import com.example.cs330_p01.common.NavigationBar
 import com.example.cs330_p01.common.SelectedOptions
@@ -61,26 +63,22 @@ fun PickerScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
         contentScale = ContentScale.FillWidth
     )
     PickerScreenView(viewModel)
-//    NavigationBar(
-//        { viewModel.goToHomeScreen() },
-//        { viewModel.goToPickerScreen() },
-//        { viewModel.goToAddScreen() },
-//        { viewModel.goToClosetScreen() }
-//    )
+    NavigationBar(
+        { viewModel.goToHomeScreen() },
+        { viewModel.goToPickerScreen() },
+        { viewModel.goToAddScreen() },
+        { viewModel.goToClosetScreen() }
+    )
 }
 
 @Composable
 fun PickerScreenView(viewModel: AppViewModel) {
+    SelectedOptions.setToNone()
     Column {
         // LogoNHelpCard()
         OutfitTypeCard()
-        ColorCard(ColorFocusCard("Should the focus be on a single color or more?"))
-        NavigationBar(
-            { viewModel.goToHomeScreen() },
-            { viewModel.goToPickerScreen() },
-            { viewModel.goToAddScreen() },
-            { viewModel.goToClosetScreen() }
-        )
+        // ColorCard(ColorFocusCard("Should the focus be on a single color or more?"))
+        ColorFocusCard("Should the focus be on a single color or more?")
     }
 }
 
@@ -110,17 +108,21 @@ fun OutfitTypeCard() {
     var standardItemCount = 3
 
 
-    var categorySize = dbCategory.getCategories().take(standardItemCount)
+    //var categorySize = dbCategory.getCategories().take(standardItemCount)
+    var radioChoices = dbCategory.getCategories().take(standardItemCount)
+    var selectedChoice by remember {
+        mutableStateOf(radioChoices[0])
+    }
 
     if (expanded) {
-        categorySize = dbCategory.getCategories()
+        radioChoices = dbCategory.getCategories()
     }
 
     if (showAddCategory) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f))
+                .background(MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f))
                 .clickable { showAddCategory = false }
         ) {
             Card(
@@ -188,7 +190,7 @@ fun OutfitTypeCard() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f))
+                .background(MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f))
                 .clickable { showDeleteCategory = false }
         ) {
             Card(
@@ -199,7 +201,7 @@ fun OutfitTypeCard() {
                     defaultElevation = 8.dp
                 ),
                 colors = CardDefaults.cardColors(
-                    MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
+                    MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
                 )
             ) {
                 Column(
@@ -230,7 +232,6 @@ fun OutfitTypeCard() {
                         }
                         Button(onClick = {
                             dbCategory.deleteCategory(tempKey)
-
                             showDeleteCategory = false
                         }, modifier = Modifier.padding(4.dp)) {
                             Text(
@@ -256,11 +257,17 @@ fun OutfitTypeCard() {
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()
+                .animateContentSize(
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioLowBouncy,
+                        stiffness = Spring.StiffnessVeryLow
+                    )
+                )
                 .clickable { expanded = !expanded },
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 8.dp
             ), colors = CardDefaults.cardColors(
-                MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
+                MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
             )
         ) {
             Text(
@@ -272,17 +279,22 @@ fun OutfitTypeCard() {
             )
 
             LazyColumn() {
-                items(categorySize) { category ->
+                items(radioChoices) { category ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         var checkState by remember {
                             mutableStateOf(false)
                         }
-
-                        Checkbox(checked = checkState, onCheckedChange = { isChecked ->
-                            checkState = isChecked
+                        var value: Boolean
+                        if (selectedChoice == category) {
+                            value = true
+                        } else {
+                            value = false
+                        }
+                        RadioButton(selected = value, onClick = {
+                            selectedChoice = category
                             if (SelectedOptions.category != "") {
                                 SelectedOptions.category =
-                                    SelectedOptions.category + "/" + category.name
+                                    SelectedOptions.category + " " + category.name
                             } else {
                                 SelectedOptions.category = category.name
                             }
@@ -316,73 +328,86 @@ fun OutfitTypeCard() {
 }
 
 @Composable
-fun ColorFocusCard(text: String): Boolean {
+fun ColorFocusCard(text: String) {//: Boolean {
     val context = LocalContext.current
     val radioChoices = listOf("Single", "More")
     var radioOrCheckBox by remember {
-        mutableStateOf(true)
+        mutableStateOf(false)
     }
-
+    var expanded by remember {
+        mutableStateOf(false)
+    }
     var selectedChoice by remember {
-        mutableStateOf(radioChoices[0])
+        mutableStateOf(radioChoices[1])
     }
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-    ) {
-        Card(
+    if (!expanded) {
+        Box(
             modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 8.dp
-            ), colors = CardDefaults.cardColors(
-                MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
-            )
+                .fillMaxWidth()
         ) {
-            Text(
-                text = text,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
-            Row() {
-                radioChoices.forEach { choice ->
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        var value: Boolean
-                        if (selectedChoice == choice) {
-                            value = true
-                        } else {
-                            value = false
-                        }
-                        RadioButton(selected = value, onClick = {
-                            selectedChoice = choice
-                            if (selectedChoice == "Single") {
-                                radioOrCheckBox = true
-                            } else {
-                                radioOrCheckBox = false
-                            }
-                            SelectedOptions.OneOrMore = radioOrCheckBox
-                        })
-                        Text(
-                            text = choice, color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 20.sp
+            Card(
+                modifier = Modifier
+                    .padding(start = 16.dp, top = 4.dp, end = 16.dp, bottom = 16.dp)
+                    .animateContentSize(
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessVeryLow
                         )
+                    )
+                    .fillMaxWidth(),
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 8.dp
+                ), colors = CardDefaults.cardColors(
+                    MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
+                )
+            ) {
+
+                Text(
+                    text = text,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+
+                Row() {
+                    radioChoices.forEach { choice ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            var value: Boolean
+                            if (selectedChoice == choice) {
+                                value = true
+                            } else {
+                                value = false
+                            }
+                            RadioButton(selected = value, onClick = {
+                                selectedChoice = choice
+                                if (selectedChoice == "Single") {
+                                    radioOrCheckBox = true
+                                    SelectedOptions.OneOrMore = true
+                                } else {
+                                    radioOrCheckBox = false
+                                    SelectedOptions.OneOrMore = false
+                                }
+
+                            })
+                            Text(
+                                text = choice, color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 20.sp
+                            )
+                        }
                     }
                 }
             }
         }
     }
-
-    return radioOrCheckBox
+    expanded = ColorCard(radioOrCheckBox = radioOrCheckBox)
+    //  return radioOrCheckBox
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ColorCard(radioOrCheckBox: Boolean) {
+fun ColorCard(radioOrCheckBox: Boolean): Boolean {
     val context = LocalContext.current
 
     var expanded by remember {
@@ -408,13 +433,21 @@ fun ColorCard(radioOrCheckBox: Boolean) {
     ) {
         Card(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(top = 16.dp, start = 16.dp, bottom = 85.dp, end = 16.dp)
                 .fillMaxWidth()
-                .clickable { expanded = !expanded },
+                .animateContentSize(
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioLowBouncy,
+                        stiffness = Spring.StiffnessVeryLow
+                    )
+                )
+                .clickable {
+                    expanded = !expanded
+                },
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 8.dp
             ), colors = CardDefaults.cardColors(
-                MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
+                MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
             )
         ) {
             Text(
@@ -437,7 +470,7 @@ fun ColorCard(radioOrCheckBox: Boolean) {
                             }
                             RadioButton(selected = value, onClick = {
                                 selectedChoice = choice
-                                SelectedOptions.colors = choice
+                                SelectedOptions.singleColor = choice
                             })
                             Text(
                                 text = choice, color = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -459,7 +492,7 @@ fun ColorCard(radioOrCheckBox: Boolean) {
                                 checkState = isChecked
                                 if (SelectedOptions.colors != "") {
                                     SelectedOptions.colors =
-                                        SelectedOptions.colors + "/" + myColor
+                                        SelectedOptions.colors + " " + myColor
                                 } else {
                                     SelectedOptions.colors = myColor
                                 }
@@ -476,5 +509,6 @@ fun ColorCard(radioOrCheckBox: Boolean) {
             }
         }
     }
+    return expanded
 }
 

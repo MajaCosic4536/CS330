@@ -1,6 +1,7 @@
 package com.example.cs330_p01.screens
 
 import android.content.Context
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -75,6 +76,7 @@ fun ClosetScreenView(viewModel: AppViewModel) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AllClothesCard(clothDetail: () -> Unit) {
     val context = LocalContext.current
@@ -184,7 +186,7 @@ fun AllClothesCard(clothDetail: () -> Unit) {
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 8.dp
             ), colors = CardDefaults.cardColors(
-                MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
+                MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
             )
         ) {
             Column() {

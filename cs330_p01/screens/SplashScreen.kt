@@ -4,12 +4,14 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -17,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -40,17 +43,26 @@ import com.example.cs330_p01.common.openCamera
 
 @Composable
 fun SplashScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
-
-    SplashScreenView(onStart = { viewModel.goToHomeScreen() }, viewModel = viewModel)
-}
-
-@Composable
-fun SplashScreenView(onStart: () -> Unit, viewModel: AppViewModel) {
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         viewModel.internetGranted.value = isGranted
     }
+
+    if (!viewModel.internetGranted.value) {
+        SplashScreenView(launcher = launcher)
+    } else {
+        viewModel.goToHomeScreen()
+    }
+}
+
+@Composable
+fun SplashScreenView(launcher: ManagedActivityResultLauncher<String, Boolean>) {
+//    val launcher = rememberLauncherForActivityResult(
+//        ActivityResultContracts.RequestPermission()
+//    ) { isGranted ->
+//        viewModel.internetGranted.value = isGranted
+//    }
     var context = LocalContext.current
 
     val cameraLauncher =
@@ -84,13 +96,15 @@ fun SplashScreenView(onStart: () -> Unit, viewModel: AppViewModel) {
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // InternetPermission(launcher = launcher)
+
         Text(
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             text = "Hello!",
             fontSize = 40.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.clickable {
-                onStart()
+                //onStart()
                 launcher.launch(Manifest.permission.INTERNET)
             }
         )
@@ -101,7 +115,7 @@ fun SplashScreenView(onStart: () -> Unit, viewModel: AppViewModel) {
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 8.dp
             ), colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
+                containerColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
             )
         )
         {

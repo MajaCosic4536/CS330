@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.Preview
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,9 +20,23 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,12 +60,12 @@ fun LogoNHelpCard() {
         elevation = CardDefaults.cardElevation(
             defaultElevation = 8.dp
         ), colors = CardDefaults.cardColors(
-            MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
+            MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
         )
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.End,
+            horizontalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth()
         ) {
             Image(
@@ -58,16 +73,15 @@ fun LogoNHelpCard() {
                 contentDescription = "Oblacak Icon",
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = 50.dp)
                     .size(90.dp),
                 alignment = Alignment.Center
             )
-            Image(
-                painter = painterResource(id = R.drawable.baseline_question_mark_24),
-                contentDescription = "Question mark",
-                modifier = Modifier
-                    .size(60.dp)
-            )
+//            Image(
+//                painter = painterResource(id = R.drawable.baseline_question_mark_24),
+//                contentDescription = "Question mark",
+//                modifier = Modifier
+//                    .size(60.dp)
+//            )
         }
     }
 }
@@ -83,7 +97,7 @@ fun NavigationBar(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
     ) {
-        BottomAppBar(containerColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)) {
+        BottomAppBar(containerColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)) {
             Row(
                 modifier = Modifier
                     .fillMaxSize()
@@ -91,37 +105,49 @@ fun NavigationBar(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Spacer(modifier = Modifier.weight(1f))
-                Image(
-                    painter = painterResource(id = R.drawable.baseline_home_24),
-                    contentDescription = "Home button",
-                    modifier = Modifier
-                        .size(70.dp)
-                        .clickable { homeScreen() }
-                )
+                Icon(Icons.Filled.Home, contentDescription =  "Home button",   modifier = Modifier
+                    .size(70.dp)
+                    .clickable { homeScreen() }, tint = MaterialTheme.colorScheme.primary)
+//                Image(
+//                    painter = painterResource(id = R.drawable.baseline_home_24),
+//                    contentDescription = "Home button",
+//                    modifier = Modifier
+//                        .size(70.dp)
+//                        .clickable { homeScreen() }
+//                )
                 Spacer(modifier = Modifier.weight(1f))
-                Image(
-                    painter = painterResource(id = R.drawable.baseline_checklist_rtl_24),
-                    contentDescription = "Picker button",
-                    modifier = Modifier
-                        .size(70.dp)
-                        .clickable { pickerScreen() }
-                )
+                Icon(Icons.Filled.CheckCircle, contentDescription = "Picker button",   modifier = Modifier
+                    .size(70.dp)
+                    .clickable { pickerScreen() }, tint = MaterialTheme.colorScheme.primary)
+//                Image(
+//                    painter = painterResource(id = R.drawable.baseline_checklist_rtl_24),
+//                    contentDescription = "Picker button",
+//                    modifier = Modifier
+//                        .size(70.dp)
+//                        .clickable { pickerScreen() }
+//                )
                 Spacer(modifier = Modifier.weight(1f))
-                Image(
-                    painter = painterResource(id = R.drawable.baseline_add_circle_outline_24),
-                    contentDescription = "Add button",
-                    modifier = Modifier
-                        .size(70.dp)
-                        .clickable { addScreen() }
-                )
+                Icon(Icons.Filled.AddCircle, contentDescription = "Add button",   modifier = Modifier
+                    .size(70.dp)
+                    .clickable { addScreen() }, tint = MaterialTheme.colorScheme.primary)
+//                Image(
+//                    painter = painterResource(id = R.drawable.baseline_add_circle_outline_24),
+//                    contentDescription = "Add button",
+//                    modifier = Modifier
+//                        .size(70.dp)
+//                        .clickable { addScreen() }
+//                )
                 Spacer(modifier = Modifier.weight(1f))
-                Image(
-                    painter = painterResource(id = R.drawable.baseline_all_inbox_24),
-                    contentDescription = "Closet button",
-                    modifier = Modifier
-                        .size(70.dp)
-                        .clickable { closetScreen() }
-                )
+                Icon(Icons.Filled.AccountBox, contentDescription = "Closet button",   modifier = Modifier
+                    .size(70.dp)
+                    .clickable { closetScreen() }, tint = MaterialTheme.colorScheme.primary)
+//                Image(
+//                    painter = painterResource(id = R.drawable.baseline_all_inbox_24),
+//                    contentDescription = "Closet button",
+//                    modifier = Modifier
+//                        .size(70.dp)
+//                        .clickable { closetScreen() }
+//                )
                 Spacer(modifier = Modifier.weight(1f))
             }
         }
@@ -137,7 +163,8 @@ fun openCamera(context: Context) {
 fun EmptyScreen() {
     Column(
         modifier = Modifier
-            .fillMaxWidth().padding(top = 100.dp),
+            .fillMaxWidth()
+            .padding(top = 100.dp),
         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center
 
     ) {
@@ -158,3 +185,4 @@ fun EmptyScreen() {
 
     }
 }
+

@@ -50,7 +50,7 @@ import com.example.cs330_p01.common.AppViewModel
 import com.example.cs330_p01.common.LogoNHelpCard
 import com.example.cs330_p01.common.NavigationBar
 import com.example.cs330_p01.common.SelectedOptions
-import com.example.cs330_p01.database.DBCategory
+import com.example.cs330_p01.database.DBCategorySQLLite
 import com.example.cs330_p01.database.getMyColorList
 
 
@@ -85,10 +85,10 @@ fun PickerScreenView(viewModel: AppViewModel) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OutfitTypeCard() {
-
     val context = LocalContext.current
 
-    val dbCategory = DBCategory(context)
+    // val dbCategory = DBCategorySQLLite(context)
+    val dbCategory = DBCategorySQLLite(context)
     var txtFieldValue by remember {
         mutableStateOf("")
     }

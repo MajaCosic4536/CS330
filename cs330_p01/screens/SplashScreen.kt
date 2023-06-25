@@ -50,14 +50,12 @@ fun SplashScreen(viewModel: AppViewModel, paddingValues: PaddingValues) {
     }
 
     if (!viewModel.internetGranted.value) {
-        SplashScreenView(launcher = launcher)
-    } else {
-        viewModel.goToHomeScreen()
+        SplashScreenView(launcher = launcher,{viewModel.goToHomeScreen()})
     }
 }
 
 @Composable
-fun SplashScreenView(launcher: ManagedActivityResultLauncher<String, Boolean>) {
+fun SplashScreenView(launcher: ManagedActivityResultLauncher<String, Boolean>,onStart:()->Unit) {
 //    val launcher = rememberLauncherForActivityResult(
 //        ActivityResultContracts.RequestPermission()
 //    ) { isGranted ->
@@ -96,15 +94,13 @@ fun SplashScreenView(launcher: ManagedActivityResultLauncher<String, Boolean>) {
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // InternetPermission(launcher = launcher)
-
         Text(
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             text = "Hello!",
             fontSize = 40.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.clickable {
-                //onStart()
+                onStart()
                 launcher.launch(Manifest.permission.INTERNET)
             }
         )

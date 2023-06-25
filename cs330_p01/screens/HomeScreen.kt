@@ -52,7 +52,6 @@ import com.example.cs330_p01.common.EmptyScreen
 import com.example.cs330_p01.common.GetRecomendedOutfit
 import com.example.cs330_p01.common.LogoNHelpCard
 import com.example.cs330_p01.common.NavigationBar
-import com.example.cs330_p01.common.SelectedOptions
 import com.example.cs330_p01.database.ClothingItem
 import com.example.cs330_p01.database.DBClothes
 import com.example.cs330_p01.database.DBWeatherCode

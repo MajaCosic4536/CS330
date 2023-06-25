@@ -4,8 +4,21 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import androidx.room.ColumnInfo
+import androidx.room.Dao
+import androidx.room.Database
+import androidx.room.DatabaseConfiguration
+import androidx.room.Entity
+import androidx.room.Insert
+import androidx.room.InvalidationTracker
+import androidx.room.PrimaryKey
+import androidx.room.Query
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.Update
+import androidx.sqlite.db.SupportSQLiteOpenHelper
 
-class DBCategory(context: Context?) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
+class DBCategorySQLLite(context: Context?) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
 
     companion object {
         private const val DB_VERSION = 1
@@ -103,6 +116,74 @@ class DBCategory(context: Context?) : SQLiteOpenHelper(context, DB_NAME, null, D
         )
     }
 }
+
+//@Entity(tableName = "categories")
+//data class CategoryRoom(
+//    @PrimaryKey(autoGenerate = true)
+//    @ColumnInfo(name = "categoryPrimaryKey")
+//    val key: Int = 0,
+//
+//    @ColumnInfo(name = "categoryName")
+//    val name: String
+//)
+//
+//@Dao
+//interface CategoryDao {
+//    @Insert
+//    fun insertCategory(category: CategoryRoom)
+//
+//    @Query("SELECT * FROM categories")
+//    fun getCategories(): List<CategoryRoom>
+//
+//    @Query("SELECT * FROM categories WHERE categoryName = :name LIMIT 1")
+//    fun getCategoryByName(name: String): CategoryRoom
+//
+//    @Query("DELETE FROM categories WHERE categoryPrimaryKey = :key")
+//    fun deleteCategory(key: Int)
+//
+//    @Update
+//    fun updateCategory(category: CategoryRoom)
+//}
+//
+//abstract class DBCategory(context: Context?) : RoomDatabase() {
+//    private val db: DBCategoryDatabase
+//
+//    companion object {
+//        private const val DB_NAME = "categoryDB"
+//        private var instance: DBCategory? = null
+//
+//        fun getInstance(context: Context): DBCategory {
+//            if (instance == null) {
+//                synchronized(DBCategory::class) {
+//                    instance = Room.databaseBuilder(
+//                        context.applicationContext,
+//                        DBCategory::class.java,
+//                        DB_NAME
+//                    ).build()
+//                }
+//            }
+//            return instance!!
+//        }
+//    }
+//
+//    init {
+//        db = Room.databaseBuilder(
+//            context!!.applicationContext,
+//            DBCategoryDatabase::class.java,
+//            DB_NAME
+//        ).build()
+//    }
+//
+//    fun getCategoryDao(): CategoryDao {
+//        return db.categoryDao()
+//    }
+//
+//}
+//
+//@Database(entities = [CategoryRoom::class], version = 1, exportSchema = false)
+//abstract class DBCategoryDatabase : RoomDatabase() {
+//    abstract fun categoryDao(): CategoryDao
+//}
 
 class DBWeatherCode(context: Context?) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
 

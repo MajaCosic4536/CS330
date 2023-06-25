@@ -58,7 +58,7 @@ import com.example.cs330_p01.common.LogoNHelpCard
 import com.example.cs330_p01.common.NavigationBar
 import com.example.cs330_p01.common.SelectedOptions
 import com.example.cs330_p01.database.ClothingItem
-import com.example.cs330_p01.database.DBCategory
+import com.example.cs330_p01.database.DBCategorySQLLite
 import com.example.cs330_p01.database.DBClothes
 import com.example.cs330_p01.database.getMyColorList
 import com.example.cs330_p01.database.getSortingCategory
@@ -406,7 +406,8 @@ fun ClosetColorFocusCard(text: String): Boolean {
 fun SortingOutfitCategoryCard() {
     val context = LocalContext.current
 
-    val dbCategory = DBCategory(context)
+   // val dbCategory = DBCategorySQLLite(context)
+    val dbCategory = DBCategorySQLLite(context)
     Box(
         modifier = Modifier
             .fillMaxWidth(), contentAlignment = Alignment.Center

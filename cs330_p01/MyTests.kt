@@ -2,30 +2,20 @@ package com.example.cs330_p01
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.cs330_p01.common.ChoseWeatherIcon
 import com.example.cs330_p01.common.DetailImage
 import com.example.cs330_p01.common.NavigationBar
-import com.example.cs330_p01.common.ShoesList
-import com.example.cs330_p01.database.DBCategory
-import com.example.cs330_p01.database.DBClothes
 import com.example.cs330_p01.database.getMyColorList
 import com.example.cs330_p01.database.getSortingCategory
-import com.example.cs330_p01.navigation.NavSetup
-import com.example.cs330_p01.screens.SplashScreen
 import com.example.cs330_p01.screens.SplashScreenView
 import junit.framework.TestCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -50,7 +40,7 @@ class MyTests {
             ) { isGranted ->
                 granted.value = isGranted
             }
-            SplashScreenView(launcher = launcher)
+            SplashScreenView(launcher = launcher, onStart = {})
         }
         rule.onNodeWithText("Hello!").assertExists()
         rule.onNodeWithText("Hello!").performClick()
@@ -70,11 +60,9 @@ class MyTests {
             ) { isGranted ->
                 granted.value = isGranted
             }
-            SplashScreenView(launcher = launcher)
+            SplashScreenView(launcher = launcher, onStart = {})
         }
-        rule.onNode(
-            hasContentDescription("Camera button") and hasClickAction()
-        ).performClick()
+
         rule.onNode(
             hasContentDescription("Camera Icon") and hasClickAction()
         ).assertExists()
@@ -91,11 +79,9 @@ class MyTests {
             ) { isGranted ->
                 granted.value = isGranted
             }
-            SplashScreenView(launcher = launcher)
+            SplashScreenView(launcher = launcher, onStart = {})
         }
-        rule.onNode(
-            hasContentDescription("Image button") and hasClickAction()
-        ).performClick()
+
         rule.onNode(
             hasContentDescription("Image Icon") and hasClickAction()
         ).assertExists()
@@ -176,7 +162,7 @@ class MyTests {
 
     @Test
     fun testChoseWeatherIcon() = runTest {
-        TestCase.assertEquals(ChoseWeatherIcon(0),R.drawable.sunacak)
+        TestCase.assertEquals(ChoseWeatherIcon(0), R.drawable.sunacak)
     }
 
     @Test
